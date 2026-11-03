@@ -1,0 +1,37 @@
+{
+  "name": "cortico-provider-humanize",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Cortico provider for Coopanion: wraps the app's own Coo connection and holds each reply until the Humanize World has written the pet's inner thought, then sends it along with the person's words",
+  "author": "abbabanana",
+  "license": "AGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abbabanana/cortico-provider-humanize.git"
+  },
+  "homepage": "https://github.com/abbabanana/cortico-provider-humanize#readme",
+  "bugs": {
+    "url": "https://github.com/abbabanana/cortico-provider-humanize/issues"
+  },
+  "keywords": ["cortico-provider", "cortico", "coopanion", "companion"],
+  "engines": { "node": ">=22" },
+  "main": "./src/index.ts",
+  "cortico": {
+    "kind": "provider",
+    "api": 6,
+    "displayName": "活人感（包住 Coo 连接）",
+    "locales": {
+      "zh": {
+        "displayName": "活人感（包住 Coo 连接）",
+        "description": "和「活人感」World 搭配：你对桌宠说话时，先等 World 想好桌宠的心情，再连同你的话一起发给模型，省掉 humanize_feel 那一轮。World 关着时就是普通的 Coo 连接。"
+      },
+      "en": {
+        "displayName": "Humanize (wraps the Coo connection)",
+        "description": "Pairs with the Humanize World: each time you speak to the pet, waits for the World to write the pet's inner thought and sends it along with your words, saving the humanize_feel round. With the World off it is a plain Coo connection."
+      }
+    },
+    "tags": ["requires-extension", "experimental"],
+    "describe": "describe.json"
+  },
+  "files": ["src", "describe.json", "README.md", "CHANGELOG.md", "LICENSE"]
+}

@@ -1,0 +1,45 @@
+{
+  "provider": {
+    "protocols": [
+      "openai-responses",
+      "openai-chat",
+      "anthropic-messages",
+      "gemini"
+    ],
+    "auth": [
+      "api-key"
+    ],
+    "local": false,
+    "input": [
+      "text",
+      "image"
+    ],
+    "title": "活人感（包住 Coo 连接）",
+    "description": "和「活人感」World 搭配：你对桌宠说话时，先等 World 想好桌宠的心情，再连同你的话一起发给模型。World 关着时就是普通的 Coo 连接。",
+    "reasoningTiers": [
+      {
+        "id": "off",
+        "label": "No thinking",
+        "thinking": false
+      },
+      {
+        "id": "low",
+        "label": "Thinking · fast",
+        "thinking": true,
+        "effort": "low"
+      },
+      {
+        "id": "high",
+        "label": "Thinking · standard",
+        "thinking": true,
+        "effort": "high"
+      },
+      {
+        "id": "max",
+        "label": "Thinking · deepest",
+        "thinking": true,
+        "effort": "max"
+      }
+    ]
+  }
+}
