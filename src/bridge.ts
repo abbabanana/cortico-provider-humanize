@@ -7,7 +7,7 @@
  */
 export const BRIDGE_KEY = Symbol.for('cortico-humanize.bridge');
 export const PROVIDER_KEY = Symbol.for('cortico-humanize.provider');
-export const BRIDGE_VERSION = 3;
+export const BRIDGE_VERSION = 4;
 
 export interface MainContext {
   instructions: string;

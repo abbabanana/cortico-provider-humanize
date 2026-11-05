@@ -1,11 +1,9 @@
 /**
- * 活人感 provider。
+ * 活人感 provider:一种端点模块（`humanize`），包住 Coopanion 自己的 Coo 连接（`coo` 模块，
+ * 从框架的注册表现取，不按路径 import）。只有用户在「模型」页选了这种端点时才起作用，
+ * 不碰别的端点模块，也不改框架的任何东西。新建并切到这种端点，可以在活人感 World 页一键完成。
  *
- * 装上就生效：加载时把已注册的每个端点模块（Coo、Responses 兼容……）的 `create` 包一层
- * (见 wrap.ts)，你现在用的端点直接带上活人感，不用新建端点、不用切换。卸掉重启就恢复原样。
- *
- * 另外保留一个 `humanize` 模块（0.1.0 时要手动新建的那种端点），已经这么配过的人不用改；
- * 它包住 Coopanion 自己的 Coo 连接（`coo` 模块，从框架的注册表现取，不按路径 import）。
+ * (0.2.x 曾在加载时包住所有端点模块，市场以「改写发给主模型的每个请求」为由下架，0.3.0 去掉了。)
  *
  * 每次请求：上下文最后一项是刚投递进来的事件帧时，问「活人感」World 要这批事件引出的心事
  * (连同主模型这次的系统前缀和最近上下文，让副 API 知道主模型知道的一切，不管记忆存在哪)，
@@ -19,9 +17,8 @@ import { BaseProvider, type ProviderInstance, type ProviderModule } from 'cortic
 import { providerModule } from 'cortico/providers/registry.ts';
 import type { GenerateOptions, Generation, ResponseClient } from 'cortico/core/generation.ts';
 import type { Request } from 'cortico/protocol/open-responses/index.ts';
-import { bridge } from './bridge.ts';
+import { BRIDGE_VERSION, PROVIDER_KEY, bridge, type ProviderMarker } from './bridge.ts';
 import { capped, contextWithInner, inputWithInner, mainContext, newestFrame } from './inject.ts';
-import { wrapAll } from './wrap.ts';
 
 export const HUMANIZE_PROVIDER_ID = 'humanize';
 const WRAPPED = 'coo';
@@ -31,8 +28,8 @@ const CAP_MS = 5_000;
 /** 记住最近这么多帧的心事，之后的请求照样补上，前缀才稳定。 */
 const KEEP = 200;
 
-const TITLE = '活人感（旧版端点，不用再新建）';
-const DESCRIPTION = '0.1.0 时要手动新建的端点类型，留着给已经这么配过的人。现在装上活人感 provider，你原来的端点就自动带上活人感，不用新建这种端点。';
+const TITLE = '活人感（包住 Coo 连接）';
+const DESCRIPTION = '和「活人感」World 搭配：你对桌宠说话时，先等 World 想好桌宠的心情，再连同你的话一起发给模型。不用在这里手动新建：在 World 页「活人感 → 配置 → 基本设置」勾「切换到活人感端点」，会照着你现在的端点复制一个并切过去。';
 
 /** 被包住的模块：Coo,没有就内建的 Responses 兼容模块。 */
 function wrapped(): ProviderModule {
@@ -140,17 +137,13 @@ export const HUMANIZE_PROVIDER: ProviderModule = {
     }))) as ProviderModule['config'];
   },
   create(name, entry, host): ProviderInstance {
-    // 被包住的 Coo 自己已经被 wrapAll 包过时，不再套第二层
-    return withHumanize(wrapped().create(name, entry, host));
+    const instance = wrapped().create(name, entry, host);
+    return { ...instance, client: new HumanizeClient(instance.client) };
   },
 } as ProviderModule;
 
-/** 给一个端点实例套上活人感；已经套过就原样返回。 */
-export function withHumanize(instance: ProviderInstance): ProviderInstance {
-  if (instance.client instanceof HumanizeClient) return instance;
-  return { ...instance, client: new HumanizeClient(instance.client) };
-}
-
-wrapAll(HUMANIZE_PROVIDER_ID, withHumanize);
+// 告诉 World「装着、已加载」，只认自己这种端点；不碰别的模块
+const marker: ProviderMarker = { version: BRIDGE_VERSION, wraps: (kind) => kind === HUMANIZE_PROVIDER_ID };
+(globalThis as Record<symbol, unknown>)[PROVIDER_KEY] = marker;
 
 export default HUMANIZE_PROVIDER;
