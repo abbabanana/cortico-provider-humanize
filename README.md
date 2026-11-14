@@ -1,5 +1,13 @@
 # 活人感 provider · cortico-provider-humanize
 
+> **⚠️ 已停止维护（2026-11）**
+> 活人感不再更新。已经装着的照常能用，想卸载请按这个顺序：
+> 1. 如果在「模型」页切到过「活人感（包住 Coo 连接）」类型的供应商，先选回原来的供应商，点「设为当前供应商」。
+> 2. 到「扩展」页卸掉 `cortico-provider-humanize` 和 `cortico-world-humanize`。
+> 3. 重启 Coopanion。
+>
+> 顺序别反：当前供应商还是活人感类型时先卸掉 provider，桌宠会说不了话。
+
 和 [活人感（cortico-world-humanize）](https://github.com/abbabanana/cortico-world-humanize) 搭配使用的 Cortico provider。
 
 它提供一种模型端点「活人感（包住 Coo 连接）」。切到这种端点后，你对桌宠说话时，它先等活人感 World 想好桌宠此刻的心情，再把心情和你的话一起发给模型。主模型这一轮就带着心事开口，不用先调用 `humanize_feel` 再多跑一轮。
